@@ -1,34 +1,20 @@
 module.exports = function check(str, bracketsConfig) {
-  var chars = str.split(''),
-        stack = [],
-        open = ['{', '(', '['],
-        close = ['}', ')', ']'],
-        closeIndex,
-        openIndex;
+  bracketsConfig = bracketsConfig.map(item => item.join(''));
 
-    // Проходимся по строке, проверяя каждый ее символ (п.4).
-    for (var i = 0, len = chars.length; i < len; i++) {
-       openIndex = open.indexOf(chars[i]);
-       if (openIndex !== -1) {
-           // Нашли открывающую скобку. Помещаем ее в стек (п.2).
-           stack.push(openIndex);
-           continue;
-       }
+  while (bracketsConfig.length) {
+    let iterator = 0;
 
-       closeIndex = close.indexOf(chars[i]);
-       if (closeIndex !== -1) {
-           // Нашли закрывающую скобку. Проверяем ее соответствие открывающей (п.3).
-           openIndex = stack.pop();
-           if (closeIndex !== openIndex) {
-               return false;
-           }
-       }
+    bracketsConfig.forEach(item => {
+      if (str.indexOf(item) != -1) {
+        str = str.replace(item, '');
+      } else {
+        iterator += 1;
+      }
+    });
+    
+    if (iterator === bracketsConfig.length) {
+      bracketsConfig.length = 0;
     }
-
-    // Проверяем дисбаланс открытых/закрытых скобок (п.5).
-    if (stack.length !== 0) {
-        return false;
-    }
-
-    return true;
   }
+  return str.length === 0 ? true : false;
+}
